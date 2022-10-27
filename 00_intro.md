@@ -29,13 +29,3 @@ F:\amaranth-exercises>..\oss-cad-suite\environment.bat
 
 [OSS CAD Suite] F:\amaranth-exercises>
 ```
-
-## Tip for vscode users
-
-Open File > Preferences > Settings, look for pylint args, and add:
-
-```txt
---contextmanager-decorators=contextlib.contextmanager,amaranth.hdl.dsl._guardedcontextmanager
-```
-
-This is because pylint doesn't recognize that `amaranth.hdl.dsl._guardedcontextmanager` is a valid context manager. Otherwise pylint will complain for every `with m.If` statement.
