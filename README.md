@@ -1,6 +1,6 @@
-# Graded exercises for nMigen
+# Graded exercises for Amaranth HDL
 
-Work in progress!
+Work in progress! Migrating to Amaranth HDL.
 
 * [00 - Introduction](00_intro.md)
 * [01 - Counting coin: basic concepts](01_input.md)
