@@ -5,8 +5,8 @@ This module provides various global utilities.
 """
 import sys
 
-from nmigen.back import rtlil
-from nmigen.hdl import Fragment
+from amaranth.back import rtlil
+from amaranth.hdl import Fragment
 
 if sys.version_info < (3, 8):
     print("Python 3.8 or above is required")

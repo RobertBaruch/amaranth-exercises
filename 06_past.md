@@ -1,6 +1,6 @@
 # Exercise 6: Living in the past
 
-## What you'll do:
+## What you'll do
 
 In the previous exercise, you showed that the output of a counter that counted from 1 to 9, going back to 1, was never 0 and was never greater than 9. You also covered the case where the output was 3. Hopefully you saw that the output started at 1, went to 2, and then to 3.
 
@@ -11,7 +11,7 @@ Show that each positive edge of the clock increments the counter by one, and tha
 In formal verification, you can refer to the value of a signal as it was one time step ago by using `Past`:
 
 ```python
-from nmigen.asserts import Past
+from amaranth.asserts import Past
 
 m.d.comb += Assert((x == 2) & (Past(x) == 1))
 ```
@@ -39,7 +39,7 @@ What is the value of `Past` before the very first time step? It is the reset val
 So far you haven't used the clock or reset signals in anything. But you can access them using `ClockSignal("domain-name")` and `ResetSignal("domain-name")`.
 
 ```python
-from nmigen import ClockSignal, ResetSignal
+from amaranth import ClockSignal, ResetSignal
 
 sync = ClockSignal("sync")
 with m.If(sync):
@@ -51,7 +51,7 @@ The above checks that `x` is always 2 when the `sync` clock is high, but makes n
 ## Other past-looking functions
 
 ```python
-from nmigen.asserts import Stable, Rose, Fell
+from amaranth.asserts import Stable, Rose, Fell
 ```
 
 `Stable(x)` is equivalent to `x == Past(x)`.
@@ -69,7 +69,7 @@ from nmigen.asserts import Stable, Rose, Fell
 The `Initial()` signal is 1 when we are on the very first time step, and 0 otherwise. This is useful for determining whether `Past` is going to give you the reset value.
 
 ```python
-from nmigen.asserts import Initial
+from amaranth.asserts import Initial
 ```
 
 ## Assumptions
@@ -81,7 +81,7 @@ Earlier we said that there is a built-in clock domain, `sync`. However, you stil
 Assumptions force the verification engine to ensure that the assumptions are true. So for example, suppose `x` were an input to some module that you want to verify:
 
 ```python
-from nmigen.asserts import Assume
+from amaranth.asserts import Assume
 
 x = Signal(16)  # An input signal
 m.d.comb += Assume(x < 0xD000)
@@ -101,7 +101,7 @@ Now the engine can only consider `x` and `y` such that `x + y < 10`. By the way,
 
 The fun continues when you have complex circuits with signals that indicate complex conditions. You can simply assume that such a signal goes high, and the solver will be forced to make that complex condition happen.
 
-This may sound similar to the Cover statement, but covering only tries to find one path to making the condition happen. Assumption works with bounded model checking (and later, induction) to find all such paths.
+This may sound similar to the Cover statement, but covering only tries to find *one* path to making the condition happen. Assumption works with bounded model checking (and later, induction) to find *all* such paths.
 
 ## Assuming a clock
 

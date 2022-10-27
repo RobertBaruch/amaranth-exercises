@@ -1,11 +1,12 @@
 # Exercise 1: Counting coin
 
 <p align="right">
-Khajiit has knowledge... if you have coin.
+<i>Khajiit has knowledge... if you have coin.</i>
 </p>
 
 ---
-## What you'll do:
+
+## What you'll do
 
 Create a module that takes as inputs:
 
@@ -29,25 +30,25 @@ Use formal verification to:
 
 ## Step 1: Create a module
 
-An nMigen *module* is a Python class that has inputs and outputs, and code that generates the logic for the desired functionality. Note that I didn't say code that *implements* the function. A key concept is that nMigen is a Python library for writing logic. When the module is *elaborated*, your code runs and nMigen outputs the corresponding logic.
+An Amaranth *module* is a Python class that has inputs and outputs, and code that generates the logic for the desired functionality. Note that I didn't say code that *implements* the function. A key concept is that Amaranth is a Python library for writing logic. When the module is *elaborated*, your code runs and Amaranth outputs the corresponding logic.
 
-You can think of the logic that nMigen writes as an integrated circuit, and the code that you write as the instructions for how to create a copy of that integrated circuit.
+You can think of the logic that Amaranth writes as an integrated circuit, and the code that you write as the instructions for how to create a copy of that integrated circuit.
 
-Modules can use other modules (*submodules*), and you can have as many copies of the module as you want. Your design has one top-level module that contains all of your other modules. When you elaborate the top-level module, nMigen outputs its logic into a file. That file can then be given to other software for synthesis on an FPGA, or for formal verification (i.e. bug hunting).
+Modules can use other modules (*submodules*), and you can have as many copies of the module as you want. Your design has one top-level module that contains all of your other modules. When you elaborate the top-level module, Amaranth outputs its logic into a file. That file can then be given to other software for synthesis on an FPGA, or for formal verification (i.e. bug hunting).
 
-![Toolchain flow](diagrams/nmigen_blocks.png)
+![Toolchain flow](diagrams/amaranth_blocks.png)
 
 You can use the [`skeleton.py`](skeleton.py) file to start. Some key features here are:
 
 * Your class is derived from `Elaboratable`
 * Your public (or visible) inputs and outputs are attributes of the class.
-* The class has an `elaborate` function that gets called by nMigen to generate the logic.
+* The class has an `elaborate` function that gets called by Amaranth to generate the logic.
 * The class has a class-level `formal` method for verifying your logic.
 * You can run your class to generate the output. This requires the `main` function in [`util.py`](util.py).
 
 ## Step 2: Create input and output signals
 
-A `Signal` in nMigen is a wire or register with some number of bits. For example:
+A `Signal` in Amaranth is a wire or register with some number of bits. For example:
 
 ```python
 x = Signal(5)      # creates a 5-bit signal named "x".
@@ -64,7 +65,7 @@ For this exercise, the logic is completely *combinatorial*: the outputs depend d
 m.d.comb += y.eq(x)
 ```
 
-This is just like writing `y = x`, except using the nMigen library, which requires using the `eq` function. That function returns a statement which can then be added to one of the domains in the module. Here, `m.d.comb` is the module's combinatorial domain.
+This is just like writing `y = x`, except using the Amaranth library, which requires using the `eq` function. That function returns a statement which can then be added to one of the domains in the module. Here, `m.d.comb` is the module's combinatorial domain.
 
 You can use constants, and arithmetic functions, too:
 
@@ -95,7 +96,7 @@ if x == 7:
     y = z
 ```
 
-The equivalent in nMigen is:
+The equivalent in Amaranth is:
 
 ```python
 m.d.comb += y.eq(0)
@@ -116,12 +117,12 @@ This does the same thing.
 
 ![An if-else-statement](diagrams/if.png)
 
-## Step 4: Make sure it compiles!
+## Step 4: Make sure it compiles
 
 You can quickly check that there aren't any syntax errors by just generating the code:
 
-```
-python3 your_file.py gen
+```sh
+python your_file.py gen
 ```
 
 ## Step 5: Write some formal verification code
@@ -180,22 +181,22 @@ If the engine cannot satisfy a cover, it will complain. This usually means that 
 
 Write the asserts and covers according to the requirements of the exercise. Compile again to make sure you haven't introduced any syntax errors.
 
-```
-python3 your_file.py gen
+```sh
+python your_file.py gen
 ```
 
 ## Step 6: Run the formal verification engine for covers
 
 Running your code with `gen` will have it output a file `toplevel.il`. This can be run through the SymbiYosys formal verification tool. It requires a `.sby` configuration file, which I've included in `answers/e01_to_pennies.sby`.
 
-```
-python3 your_class.py gen
+```sh
+python your_class.py gen
 sby -f answers/e01_to_pennies.sby cover
 ```
 
 First, look for the cover conditions to be satisfied. These are the `Reached cover statement at...` lines below. And, if all your cover statements were satisfied, you'll get a `DONE (PASS, rc=0)` line.
 
-```
+```txt
 SBY 15:17:27 [answers/e01_to_pennies_cover] Removing directory 'answers/e01_to_pennies_cover'.
 SBY 15:17:27 [answers/e01_to_pennies_cover] Copy 'toplevel.il' to 'answers/e01_to_pennies_cover/src/toplevel.il'.
 SBY 15:17:27 [answers/e01_to_pennies_cover] engine_0: smtbmc z3
@@ -236,17 +237,22 @@ The cover statements aren't found in the order you put them in your code!
 
 Each cover statement found generates a trace where you can see the inputs and outputs, as well as some intermediate signals if they are there, using `gtkwave`:
 
-```
+```sh
 gtkwave -f answers/e01_to_pennies_cover/engine_0/trace0.vcd
 ```
 
-In this case, the first trace came from the first cover statement in the exercise. The output shows `1DD`, or 477.
+In this case, the first trace came from the first cover statement in the exercise. The output shows `1DD`, or 477. You can tell which cover statement the trace corresponds to by looking at the output from `sby`:
+
+```txt
+SBY 15:17:27 [answers/e01_to_pennies_cover] engine_0: ##   0:00:00  Reached cover statement at answers/to_pennies.py:45 in step 0.
+SBY 15:17:27 [answers/e01_to_pennies_cover] engine_0: ##   0:00:00  Writing trace to VCD file: engine_0/trace0.vcd
+```
 
 ![gtkwave output](diagrams/ex1_tr0.JPG)
 
 ## Step 7: Run the formal verification engine for bounded model checking
 
-```
+```sh
 sby -f answers/e01_to_pennies.sby bmc
 ```
 

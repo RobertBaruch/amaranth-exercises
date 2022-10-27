@@ -1,11 +1,12 @@
 # Exercise 2: The day after
 
 <p align="right">
-The 14th of January is World Logic Day.
+<i>The 14th of January is World Logic Day.</i>
 </p>
 
 ----
-## What you'll do:
+
+## What you'll do
 
 Create a module that takes as inputs a date, consisting of:
 
@@ -108,7 +109,7 @@ As before, you will need to:
 * Define your inputs and outputs.
 * Write the logic for the module in `elaborate`.
 * Write your asserts in `formal`.
-* Make sure it compiles with `python3 your_file.py gen`.
+* Make sure it compiles with `python your_file.py gen`.
 * Run formal verification in cover mode using `sby -f answers/e02_next_day.sby cover`.
 * Run formal verification in BMC mode using `sby -f answers/e02_next_day.sby bmc`.
 

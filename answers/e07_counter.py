@@ -2,9 +2,9 @@
 # pylint: disable=C0103
 from typing import List, Tuple
 
-from nmigen import Signal, Module, Elaboratable, ClockSignal, ResetSignal, ClockDomain
-from nmigen.build import Platform
-from nmigen.asserts import Assume, Assert, Cover, Past, Initial, Rose
+from amaranth import Signal, Module, Elaboratable, ClockSignal, ResetSignal, ClockDomain
+from amaranth.build import Platform
+from amaranth.asserts import Assume, Assert, Cover, Past, Initial, Rose
 
 from util import main
 

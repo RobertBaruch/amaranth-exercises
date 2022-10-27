@@ -4,8 +4,8 @@
 
 Write a module that takes a 64-bit signed number, and negates it in three ways:
 
-* Invert and add 1.
-* Directly negate it.
+* Bitwise complement (invert) it and add 1.
+* Arithmetically negate it.
 * Starting from the least significant bit, copy up to and including the first 1, then invert the remaining bits.
 
 That last one seems a bit strange, but it works like this (using 8-bit numbers):
@@ -29,8 +29,8 @@ However, in 2's complement, `1000` is -8 while `0111` is 7, which means that if 
 x = Signal(signed(4))
 y = Signal(signed(4))
 m.d.comb += [
-    x.eq(0b1000),
-    y.eq(0b0111),
+    x.eq(0b1000),  # -8
+    y.eq(0b0111),  # +7
     Assert(x < y),
 ]
 ```
@@ -41,8 +41,8 @@ To treat an unsigned (or signed) signal as signed:
 x = Signal(4)
 y = Signal(4)
 m.d.comb += [
-    x.eq(0b1000),
-    y.eq(0b0111),
+    x.eq(0b1000),  # 8 (or -8 if signed)
+    y.eq(0b0111),  # 7
     Assert(x.as_signed() < y.as_signed()),
 ]
 ```
@@ -55,10 +55,10 @@ Negating a signal always results in a signed signal, regardless of whether the i
 x = Signal(4)
 y = Signal(4)
 m.d.comb += [
-    x.eq(0b0011),
-    y.eq(0b1101),
+    x.eq(0b0011),  # 3
+    y.eq(0b1101),  # 13
     Assert(y > x),
-    Assert(-x < x),
+    Assert(-x < x),  # -x is signed, so this is a signed comparison
 ]
 ```
 
@@ -68,8 +68,8 @@ Equality, on the other hand, does not take into account signedness. It is bit-fo
 x = Signal(4)
 y = Signal(4)
 m.d.comb += [
-    x.eq(0b0011),
-    y.eq(0b1101),
+    x.eq(0b0011),  # 3
+    y.eq(0b1101),  # 13 (or -3 if signed)
     Assert(y > x),
     Assert(-x == y),
 ]
@@ -90,10 +90,12 @@ m.d.comb += [
 
 ### Library: priority encoder
 
-A *priority encoder* is a circuit that takes an N-bit input and outputs the position of the first set bit, where "first" could mean most significant or least significant. nMigen has a coding library with a PriorityEncoder module built in, which outputs the position of the first least significant bit set.
+A *priority encoder* is a circuit that takes an N-bit input and outputs the position of the first set bit, where "first" could mean first *most* significant or first *least* significant. Amaranth has a coding library with a `PriorityEncoder` module built in, which outputs the position of the first *least* significant bit set.
+
+The encoder has three ports (attributes): `i`, the input, `o`, the output, which is the lowest bit number that is set in the input, and `n`, set if and only if the input is zero. The encoder also has a parameter, `width`, which tells it how many bits are in the input.
 
 ```python
-from nmigen.lib.coding import PriorityEncoder
+from amaranth.lib.coding import PriorityEncoder
 
 enc = PriorityEncoder(width=8)
 input = Signal(8)
@@ -107,7 +109,7 @@ m.d.comb += [
 ]
 ```
 
-For example, the input `0101000` will result in the output being 3 and bit_set being high.
+For example, setting `input` to `0101000` will result in `output` being 3 and `bit_set` being high.
 
 ### Limitations on slices
 
@@ -123,13 +125,11 @@ You can achieve the same effect using bit tricks. For example, `1 << y` gives yo
 
 What does `(-1 << y) & x` give you?
 
------
-
-Interested in more bit-manipulation tricks? Check out Knuth's The Art of Computer Programming, Volume 4A, chapter 7.1.3 (Bitwise Tricks and Techniques). Hacker's Delight also contains copious bit manipulation fun.
+> Interested in more bit-manipulation tricks? Check out Knuth's [The Art of Computer Programming](https://en.wikipedia.org/wiki/The_Art_of_Computer_Programming), Volume 4A, chapter 7.1.3 (Bitwise Tricks and Techniques). [Hacker's Delight](https://en.wikipedia.org/wiki/Hacker%27s_Delight) also contains copious bit manipulation fun.
 
 -----
 
-## What you'll do, part 2:
+## What you'll do, part 2
 
 Suppose you have a chip that can compare two 16-bit numbers, but only as unsigned numbers. It outputs whether the first is less than the second. Write such a module.
 

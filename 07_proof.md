@@ -1,6 +1,6 @@
 # Exercise 7: Prove it!
 
-## What you'll do:
+## What you'll do
 
 Change your counter so that instead of going from 1 to 9, it goes from 1 to 999,999,999,999 and then to 1 again.
 

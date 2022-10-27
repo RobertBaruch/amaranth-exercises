@@ -5,8 +5,8 @@ This module provides various global utilities.
 """
 import sys
 
-from nmigen.back import rtlil
-from nmigen.hdl import Fragment
+from amaranth.back import rtlil
+from amaranth.hdl import Fragment
 
 if sys.version_info < (3, 8):
     print("Python 3.8 or above is required")
@@ -33,7 +33,7 @@ def main(cls, filename="toplevel.il"):
     """
 
     if len(sys.argv) < 2 or (sys.argv[1] != "sim" and sys.argv[1] != "gen"):
-        print(f"Usage: python3 {sys.argv[0]} sim|gen")
+        print(f"Usage: python {sys.argv[0]} sim|gen")
         sys.exit(1)
 
     if sys.argv[1] == "sim":

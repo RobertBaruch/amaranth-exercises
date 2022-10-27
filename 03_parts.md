@@ -1,6 +1,6 @@
 # Exercise 3: Life finds a way
 
-## What you'll do, part 1:
+## What you'll do, part 1
 
 Create a module that determines the state of a cell in the Game of Life. It takes as input:
 
