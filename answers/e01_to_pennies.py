@@ -58,7 +58,7 @@ class ToPennies(Elaboratable):
                            == (to_pennies.pennies % 5))
 
         with m.If(to_pennies.pennies == 0):
-            m.d.comb += Assert((to_pennies.pennies % 5) == 0)
+            m.d.comb += Assert((to_pennies.pennies_out % 5) == 0)
 
         return m, [to_pennies.pennies, to_pennies.nickels, to_pennies.dimes,
                    to_pennies.quarters, to_pennies.dollars]
