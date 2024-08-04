@@ -4,7 +4,7 @@ from typing import List, Tuple
 
 from amaranth import Signal, Module, Elaboratable
 from amaranth.build import Platform
-from amaranth.asserts import Assume, Assert, Cover
+from amaranth.hdl import Assume, Assert, Cover
 
 from e03_cell3x3 import Cell3x3
 from util import main
