@@ -81,7 +81,7 @@ Earlier we said that there is a built-in clock domain, `sync`. However, you stil
 Assumptions force the verification engine to ensure that the assumptions are true. So for example, suppose `x` were an input to some module that you want to verify:
 
 ```python
-from amaranth.asserts import Assume
+from amaranth.hdl import Assume
 
 x = Signal(16)  # An input signal
 m.d.comb += Assume(x < 0xD000)

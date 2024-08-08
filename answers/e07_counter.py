@@ -4,7 +4,8 @@ from typing import List, Tuple
 
 from amaranth import Signal, Module, Elaboratable, ClockSignal, ResetSignal, ClockDomain
 from amaranth.build import Platform
-from amaranth.asserts import Assume, Assert, Cover, Past, Initial, Rose
+from amaranth.asserts import Past, Initial, Rose
+from amaranth.hdl import Assume, Assert, Cover
 
 from util import main
 
